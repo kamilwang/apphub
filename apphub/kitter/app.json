@@ -1,0 +1,68 @@
+{
+  "name": "Kitter",
+  "title": "Kitter - test",
+  "version": "1.0",
+  "description": "A privacy-friendly test",
+  "author": "kamilwang",
+  "website": "https://github.com/zedeus/nitter",
+  "category": "web",
+  "port_map": "1001",
+  "compose": {
+    "version": "3.8",
+    "services": {
+      "BT_SERVICE_NAME6": {
+        "image": "zedeus/nitter:latest",
+        "restart": "always",
+        "ports": [
+          "${HOST_IP}:${WEB_HTTP_PORT}:8080"
+        ],
+        "volumes": [
+          "${APP_PATH}/config/nitter.conf:/src/nitter.conf",
+          "${APP_PATH}/config/sessions.jsonl:/src/sessions.jsonl"
+        ],
+        "depends_on": [
+          "nitter-redis"
+        ],
+        "labels": {
+          "createdBy": "bt_apps"
+        },
+        "networks": [
+          "baota_net"
+        ]
+      },
+      "nitter-redis": {
+        "image": "redis:6-alpine",
+        "restart": "always",
+        "command": "redis-server --save 60 1 --loglevel warning",
+        "volumes": [
+          "${APP_PATH}/redis:/data"
+        ],
+        "labels": {
+          "createdBy": "bt_apps"
+        },
+        "networks": [
+          "baota_net"
+        ]
+      }
+    },
+    "networks": {
+      "baota_net": {
+        "external": true
+      }
+    }
+  },
+  "variables": [
+    {
+      "name": "WEB_HTTP_PORT",
+      "label": "Web Port",
+      "default": "1001",
+      "description": "External access port for Kitter"
+    },
+    {
+      "name": "HOST_IP",
+      "label": "Host IP",
+      "default": "0.0.0.0",
+      "description": "Bind IP"
+    }
+  ]
+}
