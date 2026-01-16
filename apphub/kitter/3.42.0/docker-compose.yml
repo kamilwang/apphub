@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   BT_SERVICE_NAME6:
     image: zedeus/nitter:latest
