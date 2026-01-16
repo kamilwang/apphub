@@ -3,25 +3,35 @@ version: "3.8"
 services:
   BT_SERVICE_NAME6:
     image: zedeus/nitter:latest
-    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: ${cpus}
+          memory: ${memory_limit}
     ports:
-      - ${HOST_IP}:${WEB_HTTP_PORT}:8080
+      - ${host_ip}:${kitter_web_port}:8080
+    restart: always
     volumes:
-      - ${APP_PATH}/config/nitter.conf:/src/nitter.conf
-      - ${APP_PATH}/config/sessions.jsonl:/src/sessions.jsonl
+      - ${app_path}/config/nitter.conf:/src/nitter.conf
+      - ${app_path}/config/sessions.jsonl:/src/sessions.jsonl
     depends_on:
-      - nitter-redis
+      - kitter-redis
     labels:
       createdBy: "bt_apps"
     networks:
       - baota_net
 
-  nitter-redis:
+  kitter-redis:
     image: redis:6-alpine
-    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: ${cpus}
+          memory: ${memory_limit}
     command: redis-server --save 60 1 --loglevel warning
+    restart: always
     volumes:
-      - ${APP_PATH}/redis:/data
+      - ${app_path}/redis:/data
     labels:
       createdBy: "bt_apps"
     networks:
