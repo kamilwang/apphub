@@ -1,12 +1,109 @@
 {
-  "name": "Kitter",
-  "title": "Kitter - test",
-  "version": "1.0",
-  "description": "A privacy-friendly test",
-  "author": "kamilwang",
-  "website": "https://github.com/zedeus/nitter",
-  "category": "web",
-  "port_map": "1001",
+  "appid": -1,
+  "appname": "Kitter",
+  "apptitle": "Kitter",
+  "apptype": "Web",
+  "appTypeCN": "Web服务",
+  "appversion": [
+    {
+      "m_version": "latest",
+      "s_version": []
+    }
+  ],
+  "appdesc": "Kitter 是一个基于 Nitter 的轻量级  前端，提供隐私友好的浏览体验。",
+  "appstatus": 1,
+  "home": "",
+  "help": "https://github.com/zedeus/nitter",
+  "updateat": 1752027587,
+  "depend": null,
+
+  "field": [
+    {
+      "attr": "domain",
+      "name": "域名",
+      "type": "textarea",
+      "default": "",
+      "suffix": "浏览器访问的域名，非必填",
+      "unit": ""
+    },
+    {
+      "attr": "allow_access",
+      "name": "允许外部访问",
+      "type": "checkbox",
+      "default": true,
+      "suffix": "允许通过主机IP+端口访问。如果您设置了域名，请不要勾选这里",
+      "unit": ""
+    },
+    {
+      "attr": "kitter_web_port",
+      "name": "Web访问端口",
+      "type": "number",
+      "default": 1001,
+      "suffix": "Kitter 的外部访问端口",
+      "unit": ""
+    },
+    {
+      "attr": "cpus",
+      "name": "CPU核心数限制",
+      "type": "number",
+      "default": 0,
+      "suffix": "0 为不限制",
+      "unit": ""
+    },
+    {
+      "attr": "memory_limit",
+      "name": "内存限制",
+      "type": "number",
+      "default": 0,
+      "suffix": "0 为不限制",
+      "unit": ""
+    }
+  ],
+
+  "env": [
+    {
+      "key": "kitter_web_port",
+      "type": "port",
+      "default": null,
+      "desc": "Kitter Web 访问端口"
+    },
+    {
+      "key": "app_path",
+      "type": "path",
+      "default": null,
+      "desc": "应用数据目录"
+    },
+    {
+      "key": "host_ip",
+      "type": "string",
+      "default": null,
+      "desc": "主机 IP"
+    },
+    {
+      "key": "cpus",
+      "type": "number",
+      "default": null,
+      "desc": "CPU 核心数限制"
+    },
+    {
+      "key": "memory_limit",
+      "type": "number",
+      "default": null,
+      "desc": "内存大小限制"
+    }
+  ],
+
+  "volumes": {
+    "config": {
+      "type": "path",
+      "desc": "配置文件目录（nitter.conf / sessions.jsonl）"
+    },
+    "redis": {
+      "type": "path",
+      "desc": "Redis 数据目录"
+    }
+  },
+
   "compose": {
     "version": "3.8",
     "services": {
@@ -14,55 +111,12 @@
         "image": "zedeus/nitter:latest",
         "restart": "always",
         "ports": [
-          "${HOST_IP}:${WEB_HTTP_PORT}:8080"
+          "${host_ip}:${kitter_web_port}:8080"
         ],
         "volumes": [
-          "${APP_PATH}/config/nitter.conf:/src/nitter.conf",
-          "${APP_PATH}/config/sessions.jsonl:/src/sessions.jsonl"
+          "${app_path}/config/nitter.conf:/src/nitter.conf",
+          "${app_path}/config/sessions.jsonl:/src/sessions.jsonl"
         ],
         "depends_on": [
-          "nitter-redis"
+          "kitter-redis"
         ],
-        "labels": {
-          "createdBy": "bt_apps"
-        },
-        "networks": [
-          "baota_net"
-        ]
-      },
-      "nitter-redis": {
-        "image": "redis:6-alpine",
-        "restart": "always",
-        "command": "redis-server --save 60 1 --loglevel warning",
-        "volumes": [
-          "${APP_PATH}/redis:/data"
-        ],
-        "labels": {
-          "createdBy": "bt_apps"
-        },
-        "networks": [
-          "baota_net"
-        ]
-      }
-    },
-    "networks": {
-      "baota_net": {
-        "external": true
-      }
-    }
-  },
-  "variables": [
-    {
-      "name": "WEB_HTTP_PORT",
-      "label": "Web Port",
-      "default": "1001",
-      "description": "External access port for Kitter"
-    },
-    {
-      "name": "HOST_IP",
-      "label": "Host IP",
-      "default": "0.0.0.0",
-      "description": "Bind IP"
-    }
-  ]
-}
