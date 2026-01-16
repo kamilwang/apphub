@@ -1,7 +1,7 @@
 {
   "appid": -1,
-  "appname": "Kitter",
-  "apptitle": "Kitter",
+  "appname": "kitter",
+  "apptitle": "kitter",
   "apptype": "Web",
   "appTypeCN": "Web服务",
   "appversion": [
@@ -10,7 +10,7 @@
       "s_version": []
     }
   ],
-  "appdesc": "Kitter 是一个基于 Nitter 的轻量级  前端，提供隐私友好的浏览体验。",
+  "appdesc": "kitter 是一个基于 Nitter 的轻量级  前端，提供隐私友好的浏览体验。",
   "appstatus": 1,
   "home": "",
   "help": "https://github.com/zedeus/nitter",
